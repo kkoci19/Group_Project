@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body class="d-flex flex-column" style="background-color: #673c3c;">
+    <nav class="navbar navbar-dark bg-dark d-flex justify-content-around">
+        <h1 class="p-2 m-2" style="color: #e3f2fd;">Welcome {{loggedUser.first_name}}!</h1>
+        <a class="text-decoration-none p-2 m-2 btn btn-primary" href="/logOut">Log Out</a>
+    </nav>
+    <main class="d-flex flex-column">
+        <div class="row w-75 m-auto p-5">
+            <div class="col-6">
+                <form action="/update_book/{{books.id}}" , method="post">
+                    <div class="form-row">
+                        <input class="form-control mt-2 mb-2 border-bottom border-dark border-2" type="text"
+                            name="title" value="{{books.title}}">
+
+                    </div>
+                    <div class="form-row">
+                        {% with messages = get_flashed_messages(category_filter=["update_title"]) %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p class="text-danger">{{message}}</p>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    {% for user in users %}
+                    <div>
+                        <h4 class="text-warning">Added by: <span class="text-info"> {{user.first_name}}
+                                {{user.last_name}}</span></h4>
+                        <h4 class="text-warning">Added on: <span class="text-info"> {{user.created_at}}</span></h4>
+                        <h4 class="text-warning">Last updated on: <span class="text-info"> {{user.updated_at}}</span>
+                        </h4>
+                    </div>
+                    {% endfor %}
+
+                    <div class="form-row">
+                        <h4 class="text-warning" for="description">Description:</h4>
+                        <textarea class="form-control border-bottom border-dark border-2" name="description" cols="30"
+                            rows="3">{{books.description}}</textarea>
+                    </div>
+                    <div class="form-row">
+                        {% with messages = get_flashed_messages(category_filter=["update_description"]) %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p class="text-danger">{{message}}</p>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    <input class="btn btn-success mt-2 mb-2 " type="submit" value="Update">
+                    <a class="btn btn-danger mt-2 mb-2" href="/delete/{{books.id}}">Delete</a>
+                </form>
+            </div>
+            <div class="col-6">
+                <h2 class="px-3 text-secondary border-bottom border-dark border-4 p-2 m-2">Users who like this book:
+                </h2>
+                {% for person in persons %}
+                <div>
+                    <ul>
+                        <li class="d-flex px-3">
+                            <h5 class="text-info">{{person.first_name}} {{person.last_name}}</h5>
+                            <div class="px-2">
+                                {% if person.id == loggedUser.id %}
+                                <a href="/unFavorite/{{person.id}}">Un-Favorite</a>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
